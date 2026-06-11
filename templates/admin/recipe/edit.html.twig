@@ -1,0 +1,16 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title 'Editer la recette: ' ~ recipe.title %}
+
+{% block body %}
+
+    <div class="container">
+        <h1>{{ recipe.title }}</h1>
+
+        <img src="{{ vich_uploader_asset(recipe, 'thumbnailFile') }}" alt="{{ recipe.title }}" height="200" width="300" class="img-fluid mb-3">
+        
+        {{ form(form) }}
+
+    </div>
+    
+{% endblock %}

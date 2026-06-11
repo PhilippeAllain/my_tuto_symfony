@@ -1,0 +1,51 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title 'Toutes les recettes' %}
+
+{% block body %}
+
+		<h1 class="text-center">Liste des recettes</h1>
+
+		<p>
+			<a class="btn btn-primary btn-sm border-warning border-3" href="{{ path('admin.recipe.create') }}">Créer une recette</a>
+		</p>
+
+			<table class="table table-bordered border border-3 border-warning">
+				<thead>
+					<tr>
+						<th>{{ knp_pagination_sortable(recipes, 'ID', 'r.id') }}</th>
+						<th>{{ knp_pagination_sortable(recipes, 'Titre', 'r.title') }}</th>
+						<th>Catégorie</th>
+						<th class="text-center" style="width: 217px">Actions</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{% for recipe in recipes %}
+						<tr>
+							<td>{{ recipe.id }}</td>
+							<td class="text-start">
+								<a href="{{ path('admin.recipe.edit', { id: recipe.id }) }}">{{ recipe.title }}</a>
+							</td>
+							<td>{{ recipe.category.name | default('')}}</td>
+							<td>
+								<div class="d-grid gap-2 d-md-flex justify-content-md-center">
+									<a class="btn btn-primary btn-sm" href="{{ path('admin.recipe.edit', { id: recipe.id }) }}">Editer</a>
+									<form action="{{ path('admin.recipe.delete', { id: recipe.id }) }}" method="POST">
+										<input type="hidden" name="_method" value="DELETE">
+										<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recipe.id) }}">
+										<button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+									</form>
+								</div>
+							</td>
+						</tr>
+						
+					{% endfor %}
+				</tbody>				
+			</table>
+			<div class="d-flex justify-content-center">
+				{{ knp_pagination_render(recipes) }}
+			</div>
+
+
+{% endblock %}
