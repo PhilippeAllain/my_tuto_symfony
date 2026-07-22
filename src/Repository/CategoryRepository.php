@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use App\DTO\CategoryWithCountDTO;
 
 
 /**
@@ -32,28 +33,17 @@ class CategoryRepository extends ServiceEntityRepository
                 'sortFieldAllowed' => ['c.id', 'c.name'] // Spécifie les champs autorisés
             ]
         );
-        /*
-        return new Paginator(
-            $this->createQueryBuilder('c')
-                ->setFirstResult(($page - 1) * $limit)
-                ->setMaxResults($limit) // Nombre de résultats par page
-                ->orderBy('c.name', 'ASC')
-                ->getQuery()
-                ->setHint(Paginator::HINT_ENABLE_DISTINCT, false), // Désactive le DISTINCT pour éviter les problèmes de pagination avec les jointures
-                false // On ne compte pas les résultats pour éviter les problèmes de performance avec les jointures
-        );
-        */
+
     }
 
     /**
-     * Summary of findAllWithCount[]
-     * @return array
+     * @return CategoryWithCountDTO[] Returns an array of CategoryWithCountDTO objects
      */
     public function findAllWithCount(): array // On retourne un tableau
     {
         return $this->createQueryBuilder('c')
-            ->select('NEW App\DTO\CategoryWithCountDTO(c.id, c.name, COUNT(c.id))') /* On sélectionne les données que l'on veut retourner, on utilise un constructeur pour créer un objet de type CategoryWithCountDTO avec les données de la catégorie et le nombre de recettes liées à cette catégorie */
-            ->leftJoin('c.recipes', 'r') // Liaison avec un left join pour récupérer les recettes liées à la catégorie
+            ->select('New App\\DTO\\CategoryWithCountDTO(c.id, c.name, COUNT(r.id))') // On sélectionne les champs nécessaires pour créer un objet CategoryWithCountDTO
+            ->leftJoin('c.recipes', 'r') // On fait une jointure gauche avec la table des recettes
             ->groupBy('c.id') // Groupement par id de catégorie pour éviter les doublons
             ->getQuery() // Pour générer la requête
             ->getResult(); // On retourne le résultat de la requête
