@@ -8,15 +8,22 @@ use App\Repository\RecipeRepository;
 use App\Entity\Recipe;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Doctrine\ORM\EntityManagerInterface;
+use App\DTO\PaginationDTO;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 
 class RecipesController extends AbstractController
 {
-    #[Route('/api/recipes')]
-    public function index(RecipeRepository $recipeRepository, Request $request, SerializerInterface $serializer)
+    #[Route('/api/recipes', methods: ['GET'])]
+    public function index(
+        RecipeRepository $recipeRepository, 
+        #[MapQueryString]
+        ?PaginationDTO $paginationDTO = null
+        )
     {
 
-        $recipes = $recipeRepository->paginateRecipes($request->query->getInt('page', 1), $request->query->getInt('limit', 10));
+        $recipes = $recipeRepository->paginateRecipes($paginationDTO?->page, $paginationDTO->limit);
         return $this->json($recipes, 200, [], [
             'groups' => 'recipes.index']
         );
@@ -24,11 +31,30 @@ class RecipesController extends AbstractController
 
     
 
-    #[Route('/api/recipes/{id}', requirements: ['id' => Requirement::DIGITS], methods: ['GET'])]
+    #[Route('/api/recipes/{id}', requirements: ['id' => Requirement::DIGITS])]
     public function show(Recipe $recipe)
     {
         return $this->json($recipe, 200, [], [
             'groups' => ['recipes.index', 'recipes.show']
             ]);
+    }
+
+    #[Route('/api/recipes', methods: ['POST'])]
+    public function create(
+        Request $request,
+        #[MapRequestPayload(
+            serializationContext: ['groups' => ['recipes.create']]
+        )]
+        Recipe $recipe,
+        EntityManagerInterface $entityManager,
+        )
+        {
+        $recipe->setCreatedAt(new \DateTimeImmutable());
+        $recipe->setUpdatedAt(new \DateTimeImmutable());
+        $entityManager->persist($recipe);
+        $entityManager->flush();
+        return $this->json($recipe, 200, [], [
+            'groups' => ['recipes.index', 'recipes.show']
+        ]);
     }
 }
