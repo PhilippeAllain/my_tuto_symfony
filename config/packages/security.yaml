@@ -10,7 +10,6 @@ security:
             entity:
                 class: App\Entity\User
                 property: username
-
     firewalls:
         dev:
             # Ensure dev tools and static assets are always allowed
