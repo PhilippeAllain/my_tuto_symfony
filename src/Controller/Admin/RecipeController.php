@@ -13,18 +13,18 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
-
+use App\Security\Voter\RecipeVoter;
 
 #[Route("/admin/recettes", name: 'admin.recipe.')]
-#[IsGranted('ROLE_ADMIN')]
+// #[IsGranted('ROLE_ADMIN')]
 final class RecipeController extends AbstractController
 {
     #[Route('/', name: 'index')]
+    #[IsGranted(RecipeVoter::LIST)]
     public function index(Request $request, RecipeRepository $repository): Response
     {
-
         $page = $request->query->getInt('page', 1);
-        $limit = 2;
+        $limit = 4;
         $recipes = $repository->paginateRecipes($page, $limit);
         $maxPages = ceil($recipes->getTotalItemCount() / $limit);
         return $this->render('admin/recipe/index.html.twig', [
@@ -35,6 +35,7 @@ final class RecipeController extends AbstractController
     }
     
     #[Route('/create', name: 'create')]
+    #[IsGranted(RecipeVoter::CREATE)]
     public function create(Request $request, EntityManagerInterface $em): Response
     {
         $recipe = new Recipe();
@@ -53,6 +54,7 @@ final class RecipeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
+    #[IsGranted(RecipeVoter::EDIT, subject:'recipe')]
     public function edit(Recipe $recipe, Request $request, EntityManagerInterface $em, UploaderHelper $helper): Response
     {
         //dd($helper->asset($recipe, 'thumbnailFile'));
