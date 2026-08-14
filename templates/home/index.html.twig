@@ -3,5 +3,7 @@
 {% block title %}Hello HomeController!{% endblock %}
 
 {% block body %}
-    Home
+   <h1>{{ 'Welcome'|trans }}</h1>
+
+   <p>{{ "home_recipe_count"|trans({count: 100}) }}</p>
 {% endblock %}

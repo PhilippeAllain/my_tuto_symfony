@@ -19,11 +19,11 @@ class RecipesController extends AbstractController
     public function index(
         RecipeRepository $recipeRepository, 
         #[MapQueryString]
-        ?PaginationDTO $paginationDTO = null
+        PaginationDTO $paginationDTO
         )
     {
 
-        $recipes = $recipeRepository->paginateRecipes($paginationDTO?->page, $paginationDTO->limit);
+        $recipes = $recipeRepository->paginateRecipes($paginationDTO->page, $paginationDTO->limit);
         return $this->json($recipes, 200, [], [
             'groups' => 'recipes.index']
         );

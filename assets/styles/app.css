@@ -4,3 +4,13 @@ body {
     opacity: 0.85;
 
 }
+
+h1 {
+    color: white;
+    font-weight: bold;
+}
+
+label {
+    color: white;
+    font-weight: bold;
+}

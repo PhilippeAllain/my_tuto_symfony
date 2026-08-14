@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use App\Security\Voter\RecipeVoter;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 #[Route("/admin/recettes", name: 'admin.recipe.')]
 // #[IsGranted('ROLE_ADMIN')]
@@ -55,7 +56,7 @@ final class RecipeController extends AbstractController
 
     #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted(RecipeVoter::EDIT, subject:'recipe')]
-    public function edit(Recipe $recipe, Request $request, EntityManagerInterface $em, UploaderHelper $helper): Response
+    public function edit(Recipe $recipe, Request $request, EntityManagerInterface $em, UploaderHelper $helper, MessageBusInterface $messageBus): Response
     {
         //dd($helper->asset($recipe, 'thumbnailFile'));
         // dd($recipe);
@@ -63,8 +64,8 @@ final class RecipeController extends AbstractController
         $form->handleRequest($request);
         // dd($recipe);
         if ($form->isSubmitted() && $form->isValid()) {
-
             $em->flush();
+            $messageBus->dispatch(new \App\Message\RecipePDFMessage($recipe->getId()));
             $this->addFlash('success', 'Recette modifiée avec succès !');
             return $this->redirectToRoute('admin.recipe.index');
         }

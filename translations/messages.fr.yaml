@@ -1,0 +1,10 @@
+vich_uploader.form_label.delete_confirm: 'Supprimer?'
+vich_uploader.link.download: Télécharger
+contactForm.name: Prénom
+contactForm.email: Courriel
+contactForm.message: Message
+contactForm.service: Service
+contactForm.save: 'Envoyer le courriel'
+Welcome: Bienvenue
+
+home_recipe_count: '{count, plural, one {# recette} other {# recettes}}'

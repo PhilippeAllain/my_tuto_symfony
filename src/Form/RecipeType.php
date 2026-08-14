@@ -12,18 +12,15 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 
 
 
 class RecipeType extends AbstractType
 {
-        public function __construct(private FormListenerFactory $listenerFactory)
-    {
-
-    }
+    public function __construct(private FormListenerFactory $listenerFactory) {}
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
@@ -41,21 +38,37 @@ class RecipeType extends AbstractType
 
             ->add('thumbnailFile', FileType::class)
 
-            ->add('category', EntityType::class, [
+            ->add('category', CategoryAutocompleteField::class, [
+                'label' => 'Catégorie',
                 'class' => Category::class,
                 'choice_label' => 'name',
-                'expanded' => true
+                'placeholder' => 'Sélectionnez une catégorie',
+                'required' => false,
             ])
             ->add('content', TextareaType::class, [
                 'empty_data' => '',
             ])
             ->add('duration')
+            ->add('quantities', CollectionType::class, [
+                'entry_type' => QuantityType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'entry_options' => [
+                    'label' => false,
+                ],
+                'attr' => [
+                    'data-form-collection-add-label-value' => 'Ajouter un ingrédient',
+                    'data-form-collection-delete-label-value' => 'Supprimer une ingrédient',
+                ]
+            ])
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer',
                 'attr' => [
                     'class' => 'btn btn-primary'
                 ]
             ])
+
             ->addEventListener(FormEvents::PRE_SUBMIT, $this->listenerFactory->autoSlug('title'))
             ->addEventListener(FormEvents::POST_SUBMIT, $this->listenerFactory->timestamps())
         ;
