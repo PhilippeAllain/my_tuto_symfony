@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Mon site{% endblock %}
 
 {% block body %}
-   <h1>{{ 'Welcome'|trans }}</h1>
+   <h1 class="text-center">{{ 'Welcome'|trans }}</h1>
 
-   <p>{{ "home_recipe_count"|trans({count: 100}) }}</p>
+   <img src="{{ asset('images/underwater-scene-with-coral-reef-sun-rays.jpg') }}" width="200" alt=underwater coral reef with sun rays filtering through clear blue water over colorful corals and small fish in a calm serene ocean scene>
+
+  
 {% endblock %}
