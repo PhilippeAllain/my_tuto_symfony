@@ -10,7 +10,7 @@
 		<img src="{{ vich_uploader_asset(recipe, 'thumbnailFile') }}" alt="{{ recipe.title }}" height="200" width="300" class="img-fluid mb-3">
 
 		<turbo-frame id="recipe_{{ recipe.id }}">
-			{{ form(form, action: path('admin.recipe.edit', {id: recipe.id})) }}
+			{{ form(form, {action: path('admin.recipe.edit', {id: recipe.id})}) }}
 			</turbo-frame>
 
 		</div>
