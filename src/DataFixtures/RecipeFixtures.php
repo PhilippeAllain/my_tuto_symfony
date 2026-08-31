@@ -28,7 +28,7 @@ class RecipeFixtures extends Fixture implements DependentFixtureInterface
             'Carottes', 'Pommes de terre', 'Riz', 'Pâtes', 'Fromage', 'Cannelle', 'Noix de muscade', 'Miel', 'Citron', 'Orange', 'Fraise', 'Framboise', 'Myrtille',
         ]);
 
-        $units = ['g', 'kg', 'ml', 'l', 'c. à soupe', 'c. à café', 'pincée', 'tranche', 'feuille', 'bouquet'];
+        $units = ['g', 'kg', 'ml', 'L', 'c. à soupe', 'c. à café', 'pincée', 'tranche', 'feuille', 'bouquet'];
 
         foreach ($ingredients as $ingredient) {
             $manager->persist($ingredient);
