@@ -59,11 +59,10 @@ final class RecipeController extends AbstractController
     #[IsGranted(RecipeVoter::EDIT, subject:'recipe')]
     public function edit(Recipe $recipe, Request $request, EntityManagerInterface $em, UploaderHelper $helper, MessageBusInterface $messageBus): Response
     {
-        //dd($helper->asset($recipe, 'thumbnailFile'));
-        // dd($recipe);
+
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
-        // dd($recipe);
+       
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
             $messageBus->dispatch(new \App\Message\RecipePDFMessage($recipe->getId()));
